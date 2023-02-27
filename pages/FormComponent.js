@@ -22,7 +22,8 @@ export default function FormComponent() {
     .catch(function (error) {
         return error
     })
-    console.log({'status': dbData.statusText, 'data': JSONdata}) 
+    console.log(dbData.statusText);
+    console.log(encryptedPassword);
     // const endpoint = '/api/savetodb'
 
     // const options = {
