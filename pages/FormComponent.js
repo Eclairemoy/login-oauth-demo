@@ -1,16 +1,24 @@
+import { useEvervault } from '@evervault/react';
 import { createClient } from '@supabase/supabase-js'
 import { useState } from 'react'
 
 export default function FormComponent() {
+  const evervault = useEvervault();
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    const encryptedPassword = await evervault.encrypt(event.target.password.value);
+    const data = {'name': name, 'email': email,'password': encryptedPassword}
+    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    const dbData = await supabase.from('users').insert(data).then(response => 
+      { return response }).catch(function (error) { alert(`Something went wrong: ${error}`)
+          return error })
+    alert(`Password saved: ${encryptedPassword}`)
   }
-  
+
   return (
         <form onSubmit={handleSubmit}>
           <p>
